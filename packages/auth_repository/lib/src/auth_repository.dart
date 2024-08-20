@@ -7,22 +7,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthService {
   String apiKey = 'AIzaSyBUQzviZANpeTc2dtACHPdDlPtVxX1NJF4';
   Dio dio = Dio();
-  Future<User> _authenticate(String email, String password) async {
+  Future<User> _authenticate(
+    String query,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final response = await dio.post(
-        "http://3.120.192.20:4001/auth/register",
-        data: {
-          "email": email,
-          "password": password,
-        },
+        "http://millima.flutterwithakmaljon.uz/api/$query",
+        data: data,
       );
-      log("-----------------------------------------");
-      print(response.data);
-      if (response.data['sendOtp']) {
+      if (response.data['success']) {
         final data = response.data;
-        final user = User.fromMap(data['newUser']);
-        print('++++++++++++++++');
-        print(user);
+        final user = User.fromMap(data['data']);
         _saveUserData(user);
 
         return user;
@@ -37,17 +33,46 @@ class AuthService {
     }
   }
 
-  Future<User> register(String email, String password) async {
-    return await _authenticate(email, password);
+  Future<User> register(String phone, String password, String userName) async {
+    return _authenticate(
+      'register',
+      {
+        "name": userName,
+        "phone": phone,
+        "password": password,
+        "password_confirmation": password,
+      },
+    );
   }
 
-  Future<User> signIn(String email, String password) async {
-    return await _authenticate(email, password);
+  Future<User> signIn(String phone, String password) async {
+    return _authenticate(
+      "login",
+      {
+        "phone": phone,
+        "password": password,
+      },
+    );
   }
 
   Future<void> logout() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.remove('userData');
+    final prefs = await SharedPreferences.getInstance();
+    final token = jsonDecode(prefs.getString('userData')!);
+    print(token['token']);
+    try {
+      final response = await dio.post(
+        "http://millima.flutterwithakmaljon.uz/api/logout",
+        options: Options(
+          headers: {"Authorization": 'Bearer ${token['token']}'},
+        ),
+      );
+      await prefs.remove('userData');
+    } on DioException {
+      rethrow;
+    } catch (e) {
+      print("Error:  $e");
+      rethrow;
+    }
   }
 
   Future<void> resetPassword(String email) async {
@@ -63,19 +88,21 @@ class AuthService {
   Future<User?> checkTokenExpiry() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final userData = sharedPreferences.getString("userData");
+    print(userData);
     if (userData == null) {
       return null;
     }
 
     final user = jsonDecode(userData);
 
-    if (DateTime.now().isBefore(
-      DateTime.parse("2024-02-27"),
-    )) {
-      return User.fromJson(user);
-    }
+    // if (DateTime.now().isBefore(
+    //   DateTime.parse("2024-09-27"),
+    // )) {
 
-    return null;
+    return User.fromMap(user);
+    // }
+
+    // return null;
   }
 
   Future<void> _saveUserData(User user) async {

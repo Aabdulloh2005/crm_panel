@@ -52,10 +52,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     nameController,
                   ),
                   _buildInputField(
-                    'Email',
-                    'Enter Email',
+                    'Phone',
+                    'Enter phone',
                     validateEmail,
                     emailController,
+                    TextInputType.number,
                   ),
                   _buildInputField(
                     'Password',
@@ -176,11 +177,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return 'Email is required';
     }
 
-    final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    // final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
-    if (!emailRegExp.hasMatch(value)) {
-      return 'Enter a valid email address';
-    }
+    // if (!emailRegExp.hasMatch(value)) {
+    // return 'Enter a valid email address';
+    // }
 
     return null;
   }
@@ -221,12 +222,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
-  Widget _buildInputField(
-    String hint,
-    String label,
-    String? Function(String?)? validator,
-    TextEditingController controller,
-  ) {
+  Widget _buildInputField(String hint, String label,
+      String? Function(String?)? validator, TextEditingController controller,
+      [TextInputType? textInputType]) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -237,6 +235,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         const Gap(5),
         CustomTextFormField(
+          keyboardType: textInputType,
           validator: validator,
           controller: controller,
           hintText: label,

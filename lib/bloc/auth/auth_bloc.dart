@@ -21,12 +21,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onRegister(AuthRegister event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final user = await authService.register(event.email, event.password);
+      final user = await authService.register(event.email, event.password, event.username);
 
       emit(AuthAuthenticated(user));
     } on DioException catch (e) {
-      print(e.toString());
-       emit(AuthError(e.toString()));
+      emit(AuthError(e.response!.data['data']['phone'].toString()));
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -64,7 +63,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user = await authService.signIn(event.email, event.password);
       emit(AuthAuthenticated(user));
     } on DioException catch (e) {
-      emit(AuthError(e.response?.data["error"]['message']));
+      emit(AuthError(e.response!.data['data']['error']));
     } catch (e) {
       emit(AuthError(e.toString()));
     }
