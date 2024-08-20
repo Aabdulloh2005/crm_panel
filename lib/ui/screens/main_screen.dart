@@ -35,11 +35,17 @@ class MainScreen extends StatelessWidget {
             );
           }
           if (state is UserLoaded) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("Welcome back, ${state.userModel.name}"),
-              ],
+            return Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Welcome back, ${state.userModel.name}",
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
             );
           } else {
             return const Center(
