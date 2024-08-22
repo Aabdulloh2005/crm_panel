@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  FocusNode focusNode = FocusNode();
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -55,15 +56,17 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const Gap(60),
               Image.asset(
                 'assets/images/logo.png',
                 height: 50,
               ),
               Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Form(
                   key: formKey,
                   child: Card(
+                    elevation: 0,
                     color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
@@ -77,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const Gap(40),
                           CustomTextFormField(
+                            focusNode: focusNode,
                             keyboardType: TextInputType.number,
                             validator: validateEmail,
                             controller: emailController,
@@ -91,19 +95,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintText: "Enter password",
                           ),
                           const Gap(8),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                builder: (context) =>
-                                    const ResetPasswordScreen(),
-                              ));
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.orange,
-                            ),
-                            child: const Text('Forgot Password?'),
+                          Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          const ResetPasswordScreen(),
+                                    ),
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  foregroundColor: const Color(0xffD9D9D9),
+                                ),
+                                child: const Text('Forgot Password?'),
+                              ),
+                            ],
                           ),
-                          const Gap(24),
+                          const Gap(20),
                           SizedBox(
                             width: double.infinity,
                             child: CustomButton(
@@ -152,13 +162,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   assetName: 'assets/images/facebook.png'),
                             ],
                           ),
-                          const Gap(40),
+                          const Gap(20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text("Don't have an account? "),
+                              const Text(
+                                "Don't have an account? ",
+                                style: TextStyle(color: Color(0xffD9D9D9)),
+                              ),
                               TextButton(
                                 onPressed: () {
+                                  focusNode.unfocus();
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
                                       builder: (context) =>
@@ -167,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 },
                                 child: const Text('Sign up',
-                                    style: TextStyle(color: Colors.orange)),
+                                    style: TextStyle(color: Color(0xff3F8CFF))),
                               ),
                             ],
                           ),

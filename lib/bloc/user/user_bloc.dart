@@ -10,6 +10,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserService userService = UserService();
   UserBloc() : super(UserInitial()) {
     on<GetUserEvent>(_onGetUserEvent);
+    on<UpdateUserEvent>(_onUpdateUser);
   }
 
   _onGetUserEvent(GetUserEvent event, Emitter<UserState> emit) async {
@@ -20,6 +21,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(
         UserLoaded(userModel: userModel),
       );
+    } catch (e) {
+      emit(UserError(error: e.toString()));
+    }
+  }
+
+  _onUpdateUser(UpdateUserEvent event, Emitter<UserState> emit) async {
+    emit(UserLoading());
+    try {
+      await userService.updateUser(
+          event.email, event.name, event.phone, event.photoUrl);
+
+      add(GetUserEvent());
     } catch (e) {
       emit(UserError(error: e.toString()));
     }

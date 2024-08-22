@@ -73,17 +73,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Row(
                     children: [
                       Checkbox(
-                        side: const BorderSide(color: Colors.orange, width: 2),
+                        side: const BorderSide(
+                            color: Color(0xffD9D9D9), width: 2),
                         value: checkBox,
                         onChanged: (value) {
                           checkBox = value!;
                           setState(() {});
                         },
-                        activeColor: Colors.orange,
+                        activeColor: const Color(0xff3F8CFF),
                       ),
-                      const Text(
+                      Text(
                         'Accept terms & Condition',
-                        style: TextStyle(color: Colors.orange),
+                        style: TextStyle(
+                          color: checkBox
+                              ? const Color(0xff3F8CFF)
+                              : const Color(0xffD9D9D9),
+                        ),
                       ),
                     ],
                   ),
@@ -125,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: CustomText(
-                            text: "Or Sign in With",
+                            text: "Or Sign up with",
                             color: Color(0xffD9D9D9),
                           )),
                       Expanded(
@@ -156,7 +161,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: const Text(
                           'Sign In',
                           style: TextStyle(
-                            color: Colors.orange,
+                            color: Color(0xff3F8CFF),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
